@@ -78,7 +78,7 @@ sunrise_sunset_org_results = {"results":{
 var timeMetrics = getTimeMetrics(sunrise_sunset_org_results)
 var dataset = [];
 
-var parseTime = d3.timeParse("%b %d %Y %I:%M:%S");
+
 var sunrise_sunset_mapping = {"sunrise": 0 ,
 	"sunset": 0,
 	"solar_noon": 0.5,
@@ -87,9 +87,12 @@ var sunrise_sunset_mapping = {"sunrise": 0 ,
 	"night_noon_end": -0.5,
 	"night_noon_begin": -0.5}
 
-Object.entries(timeMetrics).forEach(function(e){
+var sorted_entries = Object.entries(timeMetrics).sort(function(a,b){ return a[1]- b[1]});
+
+
+sorted_entries.forEach(function(e){
 	var obj = {}
-	obj['date'] =  parseTime(e[1])
+	obj['date'] =  e[1]
 	obj['value'] = sunrise_sunset_mapping[e[0]]
 
 	dataset.push(obj)
@@ -167,38 +170,37 @@ svg.selectAll(".dot")
 function getTimeMetrics(sunrise_sunset_org_results)
 {
 	var dateTemplate = "Jan 01 2000 <setTimeHere>"
-
+	var parseTime = d3.timeParse("%b %d %Y %I:%M:%S");
 	// Order in which time metrics is important! it is the order the path will be
 	// drawn in the graph
 	timeMetrics = {};
 
-	timeMetrics["night_noon_end"] =  dateTemplate.replace(
-		"<setTimeHere>",
-		"00:00:00")
+	timeMetrics["night_noon_end"] =  parseTime(dateTemplate.replace(
+			"<setTimeHere>","00:00:00"));
 
-	timeMetrics["civil_twilight_begin"] =  dateTemplate.replace(
-		"<setTimeHere>",
-		convertUTCtoGMT(sunrise_sunset_org_results.results.civil_twilight_begin))
+	timeMetrics["civil_twilight_begin"] =  parseTime(dateTemplate.replace(
+			"<setTimeHere>",
+			convertUTCtoGMT(sunrise_sunset_org_results.results.civil_twilight_begin)))
 
-	timeMetrics["sunrise"] =  dateTemplate.replace(
+	timeMetrics["sunrise"] =  parseTime(dateTemplate.replace(
 		"<setTimeHere>",
-		convertUTCtoGMT(sunrise_sunset_org_results.results.sunrise))
+		convertUTCtoGMT(sunrise_sunset_org_results.results.sunrise)))
 
-	timeMetrics["solar_noon"] =  dateTemplate.replace(
+	timeMetrics["solar_noon"] =  parseTime(dateTemplate.replace(
 		"<setTimeHere>",
-		convertUTCtoGMT(sunrise_sunset_org_results.results.solar_noon))
+		convertUTCtoGMT(sunrise_sunset_org_results.results.solar_noon)))
 
-	timeMetrics["sunset"] =  dateTemplate.replace(
+	timeMetrics["sunset"] = parseTime(dateTemplate.replace(
 		"<setTimeHere>",
-		convertUTCtoGMT(sunrise_sunset_org_results.results.sunset))
+		convertUTCtoGMT(sunrise_sunset_org_results.results.sunset)))
 
-	timeMetrics["civil_twilight_end"] =  dateTemplate.replace(
+	timeMetrics["civil_twilight_end"] =  parseTime(dateTemplate.replace(
 		"<setTimeHere>",
-		convertUTCtoGMT(sunrise_sunset_org_results.results.civil_twilight_end))
+		convertUTCtoGMT(sunrise_sunset_org_results.results.civil_twilight_end)))
 
-	timeMetrics["night_noon_begin"] =  dateTemplate.replace(
+	timeMetrics["night_noon_begin"] =  parseTime(dateTemplate.replace(
 		"<setTimeHere>",
-		"24:59:59")
+		"24:59:59"))
 
 	return timeMetrics;
 }
