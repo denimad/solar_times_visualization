@@ -1,4 +1,4 @@
-Visalization project to display sunrise and sunset times
+Visualization project to display sunrise and sunset times
 throughout 1 year around the world.
 
 
